@@ -1,0 +1,30 @@
+1. Text/spam.csv
+Line 920: When people see my msgs, They think Iam addicted to msging... They are wrong, Bcoz They don't know that Iam addicted to my sweet Friends..!! BSLVYL
+Line 1014: I just got home babe, are you still awake ?
+Line 1044: I'm in class. Will holla later
+Line 2633: No way I'm going back there!
+Line 4549: Never try alone to take the weight of a tear that comes out of ur heart and falls through ur eyes... Always remember a STUPID FRIEND is here to share... BSLVYL
+Line 4909: Will you come online today night
+Line 5331: Wishing you a wonderful week.
+Line 5463: If you hear a loud scream in about <#> minutes its cause my Gyno will be shoving things up me that don't belong :/
+
+2. Dataset_10191.csv
+Line 1723: Auntie huai juan never pick up her phone
+Line 1777: *deep sigh* ... I miss you :-( ... I am really surprised you haven't gone to the net cafe yet to get to me ... Don't you miss me?
+Line 2768: Haha... Hope � can hear the receipt sound... Gd luck!
+Line 4719: upgrdcentre orange customer, you may now take your free camera phone upgrade for your loyalty. call now on 0207 153 9153. offer end 26th july. t&c's apply. opt-out available
+Line 4856: urgent! we are prove to contact u. todays draw shows that you ingest won a �800 prize guaranteed. call 09050001809 from land line. claim m95. valid12hrs only
+Line 6013: todays vodafone numbers terminate 9167 exist choose to find a rs.2,00,000 award. if you ingest a match please call 7044518857 quoting claim code 5001 standard rates implement
+Line 8079: for ur chance to advance a �250 cash every wk txt: action to 80608. www.movietrivia.tv custcare 08712405022
+Line 8305: dear subscriber ur draw 4 �100 gift voucher will b enrol on receipt of a correct ans. when represent elvis presleys birthday? txt answer to 80062
+3. Mail/phishing_legit_dataset_KD_10000.csv
+Each email in this file takes up several lines, so each line number below points to where that email starts. I replaced the line breaks inside each email with " / " so it fits on one line here.
+
+Line 6050: Notice, your login has been locked. Use the secure link to update password and restore access. Enter your 2FA code to continue. / Keywords: security question account / Support Desk, / Sam Brown
+Line 9348: Subject: Lab booking confirmation / Quick reminder about the training session tomorrow. The materials are in the shared drive. / Feel free to add notes before we meet. / Best, / Jordan Nguyen
+Line 15552: Hello, this is the customs accounts team. There are policy violations on your account. To remain in good standing, follow the official steps to review your account today. Failure to respond may result in a hold. / Keywords: confidential customs ebay / Risk Operations, / Cameron Lee
+Line 19016: Subject: Invoice confirmation / Thanks for attending the workshop. Here are the links to references and the slide deck. / Thanks for reviewing the document. / Best, / Avery Brown
+Line 24870: Subject: Weekly status report / Sharing the revised documentation with examples. The endpoints are described in section two. / Feel free to add notes before we meet. / Best, / Sam Singh
+Line 26514: Subject: Networking event details / Sharing the revised documentation with examples. The endpoints are described in section two. / I'll share the slides later today. / Best, / Riley Khan
+Line 38400: Subject: Training session notes / Thanks for your help on the analysis. I've pushed the changes and left comments in the PR for clarity. / Let me know if the timing works for you. / Best, / Casey Martinez
+Line 45318: Subject: Team lunch planning / Hello, confirming our meeting on Thursday at 2 PM in the conference room. Please bring the draft slides. / Thanks for reviewing the document. / Best, / Morgan Lee
