@@ -1,3 +1,8 @@
+import csv
+from pathlib import Path
+
+TRAIN_PATH = Path(__file__).resolve().parents[2] / "data" / "train.csv"
+RESULT_PATH = Path(__file__).resolve().parents[2] / "python" / "algorithmicAprouch" / "result.txt"
 
 
 
@@ -672,22 +677,57 @@ SPAM_WORDS = [
     'Your password will expire',
 ]
 
-test = "Attention, this is an don't wait notice regarding your account. Your access will be limited within 24 hours. To avoid interruption, act now. This offer is time sensitive and ends soon. Follow the instructions immediately.  Risk Operations, Jamie Patel"
 
-def main(line = 0):
+def main():   
+    count_correct = 0
+    count_wrong = 0
+    count_wrong_spam = 0
+    count_wrong_ham = 0
+    compare = ""
+    with open(TRAIN_PATH, encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            label = row["label"]
+            text = row["text"]
+            compare = isSpam(text)
+            if compare == label: count_correct+=1
+            else:
+                count_wrong+=1
+                if label == "spam":count_wrong_spam+=1
+                else:count_wrong_ham+=1
+                # with open(RESULT_PATH, "a", encoding="utf-8") as w:
+                #     w.write(text+"\n")
+    print(count_correct)
+    print(count_wrong)
+    print(count_wrong_spam)
+    print(count_wrong_ham)
+            
+            
+
+def isSpam(str_):
     count = 0
+    copy = str_
     for word in SPAM_WORDS:
-        count += test.lower().count(word.lower())
-    print(count)
+        count += copy.lower().count(word.lower())
+    if count >= 4: return "spam"
+    count = 0
+    copy = str_
+    if copy.count("!")>1: return "spam"
+    if has_caps_word(copy):return "spam"
+    return "ham"
+
+def has_caps_word(text):
+    for word in text.split():
+        if word.isupper() and len(word) > 1:
+            return True
+    return False
+
 
 '''
 Rules
 1) if count of spam words in sentence >= 4
 2) If there is caps in sentence
 3) If they use more then ONE "!"
-
-
-spam,
 ""
 
 
