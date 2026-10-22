@@ -1,0 +1,10 @@
+Algorithmic Aprouch:
+7979
+3051
+1923
+1128
+for:
+print(count_correct)
+print(count_wrong)
+print(count_wrong_spam)
+print(count_wrong_ham)

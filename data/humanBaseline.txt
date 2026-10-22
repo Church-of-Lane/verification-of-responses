@@ -1,0 +1,5 @@
+	                                Kirill	    Roma
+Correct	                            19 / 20	    15 / 20
+Accuracy	                        95%	        75%
+Said spam, was ham (false positive)	 1	        0
+Said ham, was spam (false negative)	 0	        5

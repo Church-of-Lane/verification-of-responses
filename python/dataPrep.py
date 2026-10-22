@@ -66,11 +66,25 @@ def removeDuplicates():
 
 def splitData():
     df = pd.read_csv("data.csv")
-    train_df, test_df = train_test_split(df, test_size=0.2, random_state=42)
+    train_df, temp_df = train_test_split(df, test_size=0.4, random_state=42)
+    val_df, test_df = train_test_split(temp_df, test_size=0.5, random_state=43)
     train_df.to_csv("train.csv", index=False)
+    val_df.to_csv("val.csv", index=False)
     test_df.to_csv("test.csv", index=False)
+    getHumanData()
 
+
+def getHumanData():
+    df = pd.read_csv("train.csv")
+    sample = df.sample(n=20)
+    sample.to_csv("human.csv", index=False)
+    df = df.drop(sample.index)
+    df.to_csv("train.csv", index=False)
 
 
 if __name__ == "__main__":
-    merge()
+    #merge()
+    #getHumanData()
+    splitData()
+    #answerdotai/ModernBERT-base
+    
