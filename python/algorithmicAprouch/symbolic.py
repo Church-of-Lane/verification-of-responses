@@ -2,6 +2,7 @@ import csv
 from pathlib import Path
 
 TRAIN_PATH = Path(__file__).resolve().parents[2] / "data" / "train.csv"
+EVAL_PATH = Path(__file__).resolve().parents[2] / "data" / "symbolic_eval.csv"
 RESULT_PATH = Path(__file__).resolve().parents[2] / "python" / "algorithmicAprouch" / "result.txt"
 
 
@@ -688,6 +689,18 @@ def main():
     actual_spam = 0
     
     compare = ""
+
+    with open(TRAIN_PATH, encoding="utf-8") as f:
+            with open(EVAL_PATH, "w", encoding="utf-8") as f2:
+                writer = csv.writer(f2)
+                reader = csv.DictReader(f)
+                writer.writerow(["label","text"])
+                for row in reader:
+                    text = row["text"]
+                    compare = isSpam(text)
+                    writer.writerow([compare,text])
+
+                    
     with open(TRAIN_PATH, encoding="utf-8") as f:
         reader = csv.DictReader(f)
         for row in reader:
