@@ -683,6 +683,10 @@ def main():
     count_wrong = 0
     count_wrong_spam = 0
     count_wrong_ham = 0
+
+    actual_ham = 0
+    actual_spam = 0
+    
     compare = ""
     with open(TRAIN_PATH, encoding="utf-8") as f:
         reader = csv.DictReader(f)
@@ -697,10 +701,21 @@ def main():
                 else:count_wrong_ham+=1
                 # with open(RESULT_PATH, "a", encoding="utf-8") as w:
                 #     w.write(text+"\n")
+    with open(TRAIN_PATH, encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                label = row["label"]
+                if "spam" == label: actual_spam+=1
+                else:
+                    actual_ham+=1
+
+
     print(count_correct)
     print(count_wrong)
-    print(count_wrong_spam)
-    print(count_wrong_ham)
+    print(count_wrong_spam)#FN
+    print(count_wrong_ham)#FP
+    print(actual_ham)
+    print(actual_spam)
             
             
 
