@@ -80,6 +80,7 @@ def getHumanData():
     sample.to_csv("human.csv", index=False)
     df = df.drop(sample.index)
     df.to_csv("train.csv", index=False)
+    sample.to_csv("test.csv", mode="a", header=False, index=False)
 
 
 if __name__ == "__main__":
