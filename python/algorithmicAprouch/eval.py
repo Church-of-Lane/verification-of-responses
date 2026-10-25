@@ -1,7 +1,7 @@
 import symbolic
 
-def evalSymbolicData():
-    count_correct,count_wrong,count_wrong_spam,count_wrong_ham,actual_ham,actual_spam = symbolic.main()
+def printMetrics(title, results):
+    count_correct,count_wrong,count_wrong_spam,count_wrong_ham,actual_ham,actual_spam = results
 
     # positive class = spam
     FN = count_wrong_spam          # spam predicted as ham
@@ -22,7 +22,7 @@ def evalSymbolicData():
     npv = div(TN, TN + FN)                 # negative predictive value
     balanced_acc = (recall + specificity) / 2
 
-    print("=== Symbolic classifier evaluation (positive = spam) ===")
+    print(f"=== {title} (positive = spam) ===")
     print(f"Total samples : {total}  (spam: {actual_spam}, ham: {actual_ham})")
     print(f"Correct       : {count_correct}")
     print(f"Wrong         : {count_wrong}")
@@ -43,8 +43,17 @@ def evalSymbolicData():
     print(f"False pos. rate   : {fpr:.4f}")
     print(f"False neg. rate   : {fnr:.4f}")
     print(f"Neg. pred. value  : {npv:.4f}")
+    print()
 
+def evalSymbolicData():
+    printMetrics("Symbolic classifier evaluation", symbolic.main())
+
+def evalHumanData():
+    printMetrics("Human baseline - Kirill", symbolic.forHuman("Kirill"))
+    printMetrics("Human baseline - Roman", symbolic.forHuman("Roman"))
+    printMetrics("Symbolic classifier on human baseline set", symbolic.forHumanSet())
 
 
 if __name__ == "__main__":
     evalSymbolicData()
+    evalHumanData()

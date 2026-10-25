@@ -3,6 +3,9 @@ from pathlib import Path
 
 TRAIN_PATH = Path(__file__).resolve().parents[2] / "data" / "ground_truth.csv"
 EVAL_PATH = Path(__file__).resolve().parents[2] / "data" / "symbolic_eval.csv"
+HUMAN_PATH = Path(__file__).resolve().parents[2] / "data" / "human.csv"
+HUMAN_EVAL_PATH = Path(__file__).resolve().parents[2] / "data" / "human_symbolic_eval.csv"
+HUMAN_BASELINE_PATH = Path(__file__).resolve().parents[2] / "data" / "human_eval.csv"
 RESULT_PATH = Path(__file__).resolve().parents[2] / "python" / "algorithmicAprouch" / "result.txt"
 
 
@@ -679,7 +682,7 @@ SPAM_WORDS = [
 ]
 
 
-def main():   
+def main(data_path=TRAIN_PATH, eval_path=EVAL_PATH):
     count_correct = 0
     count_wrong = 0
     count_wrong_spam = 0
@@ -690,8 +693,8 @@ def main():
     
     compare = ""
 
-    with open(TRAIN_PATH, encoding="utf-8") as f:
-            with open(EVAL_PATH, "w", encoding="utf-8") as f2:
+    with open(data_path, encoding="utf-8") as f:
+            with open(eval_path, "w", encoding="utf-8") as f2:
                 writer = csv.writer(f2)
                 reader = csv.DictReader(f)
                 writer.writerow(["label","text"])
@@ -701,7 +704,7 @@ def main():
                     writer.writerow([compare,text])
 
                     
-    with open(TRAIN_PATH, encoding="utf-8") as f:
+    with open(data_path, encoding="utf-8") as f:
         reader = csv.DictReader(f)
         for row in reader:
             label = row["label"]
@@ -712,9 +715,7 @@ def main():
                 count_wrong+=1
                 if label == "spam":count_wrong_spam+=1
                 else:count_wrong_ham+=1
-                # with open(RESULT_PATH, "a", encoding="utf-8") as w:
-                #     w.write(text+"\n")
-    with open(TRAIN_PATH, encoding="utf-8") as f:
+    with open(data_path, encoding="utf-8") as f:
             reader = csv.DictReader(f)
             for row in reader:
                 label = row["label"]
@@ -723,8 +724,36 @@ def main():
                     actual_ham+=1
 
     return [count_correct,count_wrong,count_wrong_spam,count_wrong_ham,actual_ham,actual_spam]
-            
-            
+
+def forHuman(person):
+    col = {"roman": 2, "kirill": 4}[person.lower()]
+    count_correct = 0
+    count_wrong = 0
+    count_wrong_spam = 0
+    count_wrong_ham = 0
+
+    actual_ham = 0
+    actual_spam = 0
+
+    with open(HUMAN_BASELINE_PATH, encoding="cp1252") as f:
+        reader = csv.reader(f)
+        next(reader)
+        next(reader)
+        for row in reader:
+            label = row[0].strip().lower()
+            guess = row[col].strip().lower()
+            if label == "spam": actual_spam+=1
+            else: actual_ham+=1
+            if guess == label: count_correct+=1
+            else:
+                count_wrong+=1
+                if label == "spam":count_wrong_spam+=1
+                else:count_wrong_ham+=1
+
+    return [count_correct,count_wrong,count_wrong_spam,count_wrong_ham,actual_ham,actual_spam]
+
+def forHumanSet():
+    return main(HUMAN_PATH, HUMAN_EVAL_PATH)
 
 def isSpam(str_):
     count = 0
