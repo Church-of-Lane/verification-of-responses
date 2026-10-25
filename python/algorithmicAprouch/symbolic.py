@@ -1,7 +1,7 @@
 import csv
 from pathlib import Path
 
-TRAIN_PATH = Path(__file__).resolve().parents[2] / "data" / "train.csv"
+TRAIN_PATH = Path(__file__).resolve().parents[2] / "data" / "ground_truth.csv"
 EVAL_PATH = Path(__file__).resolve().parents[2] / "data" / "symbolic_eval.csv"
 RESULT_PATH = Path(__file__).resolve().parents[2] / "python" / "algorithmicAprouch" / "result.txt"
 
@@ -722,13 +722,7 @@ def main():
                 else:
                     actual_ham+=1
 
-
-    print(count_correct)
-    print(count_wrong)
-    print(count_wrong_spam)#FN
-    print(count_wrong_ham)#FP
-    print(actual_ham)
-    print(actual_spam)
+    return [count_correct,count_wrong,count_wrong_spam,count_wrong_ham,actual_ham,actual_spam]
             
             
 
@@ -765,4 +759,5 @@ Rules
 
 
 if __name__ == "__main__":
+    print("count_correct, count_wrong, count_wrong_spam(FN), count_wrong_ham(FP), actual_ham, actual_spam")
     main()
