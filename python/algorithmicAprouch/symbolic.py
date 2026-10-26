@@ -1,11 +1,13 @@
 import csv
 from pathlib import Path
+import pandas as pd
 
 TRAIN_PATH = Path(__file__).resolve().parents[2] / "data" / "ground_truth.csv"
 EVAL_PATH = Path(__file__).resolve().parents[2] / "data" / "symbolic_eval.csv"
 HUMAN_PATH = Path(__file__).resolve().parents[2] / "data" / "human.csv"
 HUMAN_EVAL_PATH = Path(__file__).resolve().parents[2] / "data" / "human_symbolic_eval.csv"
-HUMAN_BASELINE_PATH = Path(__file__).resolve().parents[2] / "data" / "human_eval.csv"
+HUMAN_ORIGIN_PATH = Path(__file__).resolve().parents[2] / "data" / "human_datasheet_origin.xlsx"
+HUMAN_KIRILL_PATH = Path(__file__).resolve().parents[2] / "data" / "human_datasheet_Kirill.xlsx"
 RESULT_PATH = Path(__file__).resolve().parents[2] / "python" / "algorithmicAprouch" / "result.txt"
 
 
@@ -725,8 +727,10 @@ def main(data_path=TRAIN_PATH, eval_path=EVAL_PATH):
 
     return [count_correct,count_wrong,count_wrong_spam,count_wrong_ham,actual_ham,actual_spam]
 
-def forHuman(person):
-    col = {"roman": 2, "kirill": 4}[person.lower()]
+def forHuman():
+    # Kirill's labels vs the true labels, same 20 messages in the same order
+    origin = pd.read_excel(HUMAN_ORIGIN_PATH)
+    kirill = pd.read_excel(HUMAN_KIRILL_PATH)
     count_correct = 0
     count_wrong = 0
     count_wrong_spam = 0
@@ -735,20 +739,16 @@ def forHuman(person):
     actual_ham = 0
     actual_spam = 0
 
-    with open(HUMAN_BASELINE_PATH, encoding="cp1252") as f:
-        reader = csv.reader(f)
-        next(reader)
-        next(reader)
-        for row in reader:
-            label = row[0].strip().lower()
-            guess = row[col].strip().lower()
-            if label == "spam": actual_spam+=1
-            else: actual_ham+=1
-            if guess == label: count_correct+=1
-            else:
-                count_wrong+=1
-                if label == "spam":count_wrong_spam+=1
-                else:count_wrong_ham+=1
+    for label, guess in zip(origin["label"], kirill["label"]):
+        label = str(label).strip().lower()
+        guess = str(guess).strip().lower()
+        if label == "spam": actual_spam+=1
+        else: actual_ham+=1
+        if guess == label: count_correct+=1
+        else:
+            count_wrong+=1
+            if label == "spam":count_wrong_spam+=1
+            else:count_wrong_ham+=1
 
     return [count_correct,count_wrong,count_wrong_spam,count_wrong_ham,actual_ham,actual_spam]
 

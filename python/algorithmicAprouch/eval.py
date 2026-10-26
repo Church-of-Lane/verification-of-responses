@@ -49,8 +49,7 @@ def evalSymbolicData():
     printMetrics("Symbolic classifier evaluation", symbolic.main())
 
 def evalHumanData():
-    printMetrics("Human baseline - Kirill", symbolic.forHuman("Kirill"))
-    printMetrics("Human baseline - Roman", symbolic.forHuman("Roman"))
+    printMetrics("Human baseline - Kirill", symbolic.forHuman())
     printMetrics("Symbolic classifier on human baseline set", symbolic.forHumanSet())
 
 
