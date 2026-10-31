@@ -1,0 +1,8 @@
+{
+  "VOCAB_SIZE": 20000,
+  "SEQ_LEN": 128,
+  "EMBED_DIM": 128,
+  "batch_size": 64,
+  "max_epochs": 16,
+  "epochs_run": 4
+}
