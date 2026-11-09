@@ -4,5 +4,5 @@
   "EMBED_DIM": 128,
   "batch_size": 64,
   "max_epochs": 16,
-  "epochs_run": 4
+  "epochs_run": 3
 }
