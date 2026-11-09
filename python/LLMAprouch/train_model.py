@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 TRAIN_DATA = Path(__file__).parent.parent.parent / "data" / "train.csv"
 VAL_DATA = Path(__file__).parent.parent.parent / "data" / "val.csv"
 TEST_DATA = Path(__file__).parent.parent.parent / "data" / "ground_truth.csv"
-MODEL_DIR = Path(__file__).parent / "model_v2"
+MODEL_DIR = Path(__file__).parent / "model_v3"
 VOCAB_SIZE = 20000
 SEQ_LEN = 128
 EMBED_DIM  = 128
@@ -71,13 +71,31 @@ def save_history(history, out_dir):
 
 class TenthEpochLogger(keras.callbacks.Callback):
     # records train and val metrics 10 times per epoch
-    def __init__(self, val_x, val_y, steps_per_epoch, batch_size):
+    def __init__(self, train_x, train_y, val_x, val_y, steps_per_epoch, batch_size):
         super().__init__()
+        self.train_x = train_x
+        self.train_y = np.array(train_y)
         self.val_x = val_x
         self.val_y = np.array(val_y)
         self.steps = steps_per_epoch
         self.batch_size = batch_size
+        self.auc = keras.metrics.AUC()
         self.points = {"epoch": [], "loss": [], "accuracy": [], "val_loss": [], "val_accuracy": []}
+        for name in ["AUC", "Precision", "Recall", "f1"]:
+            self.points[name] = []
+            self.points["val_" + name] = []
+
+    def extra_metrics(self, y, probs):
+        preds = (probs > 0.5).astype(int)
+        tp = int(((preds == 1) & (y == 1)).sum())
+        fp = int(((preds == 1) & (y == 0)).sum())
+        fn = int(((preds == 0) & (y == 1)).sum())
+        precision = tp / (tp + fp) if tp + fp else 0.0
+        recall = tp / (tp + fn) if tp + fn else 0.0
+        f1 = 2 * precision * recall / (precision + recall) if precision + recall else 0.0
+        self.auc.reset_state()
+        self.auc.update_state(y, probs)
+        return {"AUC": float(self.auc.result()), "Precision": precision, "Recall": recall, "f1": f1}
 
     def on_epoch_begin(self, epoch, logs=None):
         self.epoch = epoch
@@ -113,6 +131,13 @@ class TenthEpochLogger(keras.callbacks.Callback):
         self.points["val_loss"].append(val_loss)
         self.points["val_accuracy"].append(val_acc)
 
+        # these aren't running means, so measure them on the full train set
+        train_probs = self.model.predict(self.train_x, batch_size=self.batch_size, verbose=0).ravel()
+        for name, value in self.extra_metrics(self.train_y, train_probs).items():
+            self.points[name].append(value)
+        for name, value in self.extra_metrics(self.val_y, probs).items():
+            self.points["val_" + name].append(value)
+
 def save_tenth_history(points, out_dir):
     with open(out_dir / "history_tenth_epoch.json", "w", encoding="utf-8") as f:
         json.dump(points, f, indent=2)
@@ -123,19 +148,16 @@ def save_tenth_history(points, out_dir):
 
 def plot_history(points, out_dir):
     epochs = points["epoch"]
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11, 4))
+    panels = [("loss", "Loss"), ("accuracy", "Accuracy"), ("AUC", "AUC"),
+              ("Precision", "Precision"), ("Recall", "Recall"), ("f1", "F1 score")]
+    fig, axes = plt.subplots(2, 3, figsize=(15, 8))
 
-    ax1.plot(epochs, points["loss"], label="train")
-    ax1.plot(epochs, points["val_loss"], label="val")
-    ax1.set_title("Loss")
-    ax1.set_xlabel("Epoch")
-    ax1.legend()
-
-    ax2.plot(epochs, points["accuracy"], label="train")
-    ax2.plot(epochs, points["val_accuracy"], label="val")
-    ax2.set_title("Accuracy")
-    ax2.set_xlabel("Epoch")
-    ax2.legend()
+    for ax, (key, title) in zip(axes.ravel(), panels):
+        ax.plot(epochs, points[key], label="train")
+        ax.plot(epochs, points["val_" + key], label="val")
+        ax.set_title(title)
+        ax.set_xlabel("Epoch")
+        ax.legend()
 
     fig.tight_layout()
     fig.savefig(out_dir / "training_curves.png", dpi=150)
@@ -151,7 +173,7 @@ if __name__ == "__main__":
     v, val_labels, val_text = load_data(VAL_DATA)
     val_text = vectorizer(val_text)
     model = set_model()
-    tenth_logger = TenthEpochLogger(val_text, val_labels, int(np.ceil(len(labels) / 64)), 64)
+    tenth_logger = TenthEpochLogger(train_text, labels, val_text, val_labels, int(np.ceil(len(labels) / 64)), 64)
     history = model.fit(
         train_text,  np.array(labels, dtype="float32").reshape(-1, 1),
         validation_data=(val_text, np.array(val_labels, dtype="float32").reshape(-1, 1)),
@@ -160,7 +182,7 @@ if __name__ == "__main__":
         callbacks=[tenth_logger, keras.callbacks.EarlyStopping(patience=2, restore_best_weights=True)],
     )
 
-    # everything from this run goes into model_v2/
+    # everything from this run goes into model_v3/
     model.save(MODEL_DIR / "spam_lstm.keras")
     with open(MODEL_DIR / "vocab.json", "w", encoding="utf-8") as f:
         json.dump(vectorizer.get_vocabulary(), f)  # needed to vectorize new text the same way
